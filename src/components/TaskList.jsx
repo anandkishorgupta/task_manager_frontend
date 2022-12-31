@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useEffect } from "react";
 import LoadImg from "../assets/loading.gif";
+const server = process.env.REACT_APP_SERVER_URL;
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
@@ -26,7 +27,7 @@ const TaskList = () => {
   const getTasks = async () => {
     setIsLoading(true);
     try {
-      const { data } = await axios.get("http://localhost:5000/api/tasks");
+      const { data } = await axios.get(`${server}/api/tasks`);
       setTasks(data);
       setIsLoading(false);
     } catch (error) {
@@ -43,7 +44,7 @@ const TaskList = () => {
       return toast.error("Input field cannot be empty");
     }
     try {
-      await axios.post("http://localhost:5000/api/tasks", formData);
+      await axios.post(`${server}/api/tasks`, formData);
       toast.success("Task added successfully");
       setFormData({ ...formData, Taskname: "" });
       await getTasks();
@@ -53,7 +54,7 @@ const TaskList = () => {
   };
   const deleteTask = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/tasks/${id}`);
+      await axios.delete(`${server}/api/tasks/${id}`);
       toast.success("deleted successfully");
       await getTasks();
     } catch (error) {
@@ -76,10 +77,7 @@ const TaskList = () => {
       return toast.error("Input field cannot be empty");
     }
     try {
-      await axios.put(
-        `http://localhost:5000/api/tasks/${editModeId}`,
-        formData
-      );
+      await axios.put(`${server}/api/tasks/${editModeId}`, formData);
       toast.success("Task edited successfully");
       setIsEdit(false);
       await getTasks();
@@ -93,7 +91,7 @@ const TaskList = () => {
       const { completed } = task;
       console.log(completed);
       if (completed === false) {
-        await axios.put(`http://localhost:5000/api/tasks/${task._id}`, {
+        await axios.put(`${server}/api/tasks/${task._id}`, {
           Taskname: task.Taskname,
           completed: true,
         });
